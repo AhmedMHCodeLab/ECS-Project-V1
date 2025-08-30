@@ -1,0 +1,2 @@
+- Explain why ECS over Fargate vs EC2 launch type, why ECR over DockerHub, etc.
+- Link directly to AWS or Terraform docs in your notes.

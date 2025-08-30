@@ -1,0 +1,43 @@
+# AWS specific
+.aws/
+aws/
+aws-cli/
+*aws-credentials*
+
+# Terraform additional files
+infra/**/.terraform/
+infra/**/*.tfstate
+infra/**/*.tfstate.backup
+infra/**/*.tfplan
+infra/.terraform.tfstate.lock.info
+infra/**/.terraform.lock.hcl
+
+# Crash log files
+crash.log
+
+# SSH Keys
+*.pem
+*.key
+id_rsa*
+id_dsa*
+
+# Docker
+docker-compose.override.yml
+
+# Application specific
+app/.env.*
+app/npm-debug.log*
+app/yarn-debug.log*
+app/yarn-error.log*
+app/coverage/
+app/.next/
+
+# Local development files
+*.local
+.envrc
+.direnv/
+
+# Temporary files
+*.swp
+*.swo
+*~
