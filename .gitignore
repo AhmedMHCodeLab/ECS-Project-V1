@@ -23,6 +23,8 @@ id_dsa*
 
 # Docker
 docker-compose.override.yml
+Dockerfile
+.dockerignore
 
 # Application specific
 app/.env.*
@@ -31,6 +33,14 @@ app/yarn-debug.log*
 app/yarn-error.log*
 app/coverage/
 app/.next/
+node_modules/
+npm-debug.log
+.env
+
+# Testing and coverage
+.nyc_output/
+coverage/
+.coverage/
 
 # Local development files
 *.local
@@ -41,3 +51,12 @@ app/.next/
 *.swp
 *.swo
 *~
+.sass-cache/
+.DS_Store
+
+# Version control
+.git/
+.gitignore
+
+# Documentation
+README.md
