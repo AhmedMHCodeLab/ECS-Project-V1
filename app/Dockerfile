@@ -3,17 +3,17 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy package.json if it exists (no package-lock required)
-COPY package.json* ./
+# Copy package files
+COPY package*.json yarn.lock ./
 
-# Install dependencies (use npm install instead of npm ci since we may not have package-lock.json)
-RUN if [ -f package.json ]; then npm install; else echo '{"name":"app","version":"1.0.0"}' > package.json && npm install; fi
+# Install dependencies
+RUN yarn install --frozen-lockfile
 
 # Copy source code
-COPY . ./
+COPY . .
 
 # Build the application
-RUN if [ -f package.json ] && grep -q "build" package.json; then npm run build; else mkdir -p build && echo "<html><body><h1>Threat Composer App</h1></body></html>" > build/index.html; fi
+RUN yarn build
 
 # Production stage
 FROM nginx:alpine
@@ -26,6 +26,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port
 EXPOSE 80
+
+# Health check (using wget instead of curl)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
