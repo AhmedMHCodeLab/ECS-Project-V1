@@ -26,6 +26,19 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
+    - name: Check infrastructure status
+      id: check-infra
+      run: |
+        echo "Checking if ECS cluster exists..."
+        if ! aws ecs describe-clusters --clusters ${{ env.ECS_CLUSTER }} --query 'clusters[0].[status]' --output text 2>/dev/null | grep -q ACTIVE; then
+          echo "::warning::ECS cluster ${{ env.ECS_CLUSTER }} not found or not active."
+          echo "Remember to run terraform apply first to create the infrastructure!"
+          echo "INFRASTRUCTURE_EXISTS=false" >> $GITHUB_ENV
+        else
+          echo "ECS cluster exists and is active."
+          echo "INFRASTRUCTURE_EXISTS=true" >> $GITHUB_ENV
+        fi
+
     - name: Login to ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
@@ -41,6 +54,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
     - name: Update ECS service
+      if: env.INFRASTRUCTURE_EXISTS == 'true'
       run: |
         aws ecs update-service \
           --cluster ${{ env.ECS_CLUSTER }} \
@@ -48,7 +62,15 @@ jobs:
           --force-new-deployment
 
     - name: Wait for deployment
+      if: env.INFRASTRUCTURE_EXISTS == 'true'
       run: |
         aws ecs wait services-stable \
           --cluster ${{ env.ECS_CLUSTER }} \
           --services ${{ env.ECS_SERVICE }}
+          
+    - name: Infrastructure Missing Notice
+      if: env.INFRASTRUCTURE_EXISTS == 'false'
+      run: |
+        echo "::warning::Deployment skipped because infrastructure is missing."
+        echo "Run the terraform workflow or 'terraform apply' to create the required resources."
+        echo "The Docker image was still built and pushed to ECR for future use."
