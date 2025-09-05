@@ -41,10 +41,10 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = var.create_certificate ? "redirect" : "forward"
+    type = var.enable_https ? "redirect" : "forward"
 
     dynamic "redirect" {
-      for_each = var.create_certificate ? [1] : []
+      for_each = var.enable_https ? [1] : []
       content {
         port        = "443"
         protocol    = "HTTPS"
@@ -53,7 +53,7 @@ resource "aws_lb_listener" "http" {
     }
 
     dynamic "forward" {
-      for_each = var.create_certificate ? [] : [1]
+      for_each = var.enable_https ? [] : [1]
       content {
         target_group {
           arn = aws_lb_target_group.main.arn
@@ -63,29 +63,15 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-# SSL Certificate (optional)
-resource "aws_acm_certificate" "main" {
-  count = var.create_certificate ? 1 : 0
-
-  domain_name       = var.domain_name
-  validation_method = "DNS"
-
-  tags = var.tags
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# HTTPS Listener (optional)
+# HTTPS Listener
 resource "aws_lb_listener" "https" {
-  count = var.create_certificate ? 1 : 0
+  count = var.enable_https ? 1 : 0
 
   load_balancer_arn = aws_lb.main.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = aws_acm_certificate.main[0].arn
+  certificate_arn   = var.certificate_arn
 
   default_action {
     type             = "forward"

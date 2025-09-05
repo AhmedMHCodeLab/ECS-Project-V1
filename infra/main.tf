@@ -38,14 +38,16 @@ module "ecr" {
 module "alb" {
   source = "./modules/alb"
   
-  project_name        = var.project_name
-  environment         = var.environment
-  vpc_id              = module.vpc.vpc_id
-  public_subnet_ids   = module.vpc.public_subnet_ids
+  project_name          = var.project_name
+  environment           = var.environment
+  vpc_id                = module.vpc.vpc_id
+  public_subnet_ids     = module.vpc.public_subnet_ids
   alb_security_group_id = module.security_groups.alb_security_group_id
-  domain_name         = var.domain_name
-  create_certificate  = var.create_certificate
-  tags                = local.common_tags
+  domain_name           = var.domain_name
+  create_certificate    = var.create_certificate
+  certificate_arn       = var.create_certificate ? aws_acm_certificate_validation.main[0].certificate_arn : ""
+  enable_https          = var.create_certificate
+  tags                  = local.common_tags
 }
 
 # ECS Module

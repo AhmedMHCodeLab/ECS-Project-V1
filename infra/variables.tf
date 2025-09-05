@@ -22,10 +22,28 @@ variable "domain_name" {
   default     = ""
 }
 
+variable "subdomain" {
+  description = "Subdomain for the application"
+  type        = string
+  default     = "tm"
+}
+
 variable "create_certificate" {
   description = "Whether to create SSL certificate"
   type        = bool
   default     = false
+}
+
+variable "create_route53_record" {
+  description = "Whether to create Route 53 DNS record"
+  type        = bool
+  default     = false
+}
+
+variable "hosted_zone_id" {
+  description = "Route 53 hosted zone ID"
+  type        = string
+  default     = ""
 }
 
 variable "container_image" {

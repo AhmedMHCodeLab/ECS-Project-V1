@@ -35,6 +35,18 @@ variable "create_certificate" {
   default     = false
 }
 
+variable "certificate_arn" {
+  description = "SSL certificate ARN"
+  type        = string
+  default     = ""
+}
+
+variable "enable_https" {
+  description = "Enable HTTPS listener"
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "Common tags"
   type        = map(string)
