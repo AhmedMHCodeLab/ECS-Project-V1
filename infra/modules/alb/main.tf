@@ -1,4 +1,3 @@
-# Application Load Balancer
 resource "aws_lb" "main" {
   name               = "${var.project_name}-${var.environment}-alb"
   internal           = false
@@ -11,7 +10,6 @@ resource "aws_lb" "main" {
   tags = var.tags
 }
 
-# Target Group
 resource "aws_lb_target_group" "main" {
   name        = "${var.project_name}-${var.environment}-tg"
   port        = 80
@@ -34,7 +32,6 @@ resource "aws_lb_target_group" "main" {
   tags = var.tags
 }
 
-# HTTP Listener
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.main.arn
   port              = "80"
@@ -63,7 +60,6 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-# HTTPS Listener
 resource "aws_lb_listener" "https" {
   count = var.enable_https ? 1 : 0
 

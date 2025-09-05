@@ -20,5 +20,5 @@ output "target_group_arn" {
 
 output "certificate_arn" {
   description = "Certificate ARN"
-  value       = var.create_certificate ? aws_acm_certificate.main[0].arn : ""
+  value       = var.certificate_arn
 }

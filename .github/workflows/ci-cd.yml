@@ -1,5 +1,5 @@
 name: Deploy
-# This workflow builds a Docker image, pushes it to Amazon ECR, and deploys it to an Amazon ECS service.
+
 on:
   push:
     branches: [main]

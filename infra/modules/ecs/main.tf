@@ -1,4 +1,3 @@
-# ECS Cluster
 resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-${var.environment}-cluster"
 
@@ -10,7 +9,6 @@ resource "aws_ecs_cluster" "main" {
   tags = var.tags
 }
 
-# ECS Task Execution Role
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "${var.project_name}-${var.environment}-ecs-task-execution-role"
 
@@ -35,7 +33,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "main" {
   name              = "/ecs/${var.project_name}-${var.environment}"
   retention_in_days = 30
@@ -43,7 +40,6 @@ resource "aws_cloudwatch_log_group" "main" {
   tags = var.tags
 }
 
-# ECS Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = "${var.project_name}-${var.environment}-task"
   network_mode             = "awsvpc"
@@ -80,7 +76,6 @@ resource "aws_ecs_task_definition" "main" {
   tags = var.tags
 }
 
-# ECS Service
 resource "aws_ecs_service" "main" {
   name            = "${var.project_name}-${var.environment}-service"
   cluster         = aws_ecs_cluster.main.id
@@ -105,7 +100,6 @@ resource "aws_ecs_service" "main" {
   tags = var.tags
 }
 
-# Auto Scaling Target
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 4
   min_capacity       = 1
@@ -114,7 +108,6 @@ resource "aws_appautoscaling_target" "ecs_target" {
   service_namespace  = "ecs"
 }
 
-# Auto Scaling Policy
 resource "aws_appautoscaling_policy" "ecs_policy_cpu" {
   name               = "${var.project_name}-${var.environment}-cpu-autoscaling"
   policy_type        = "TargetTrackingScaling"

@@ -8,6 +8,11 @@ output "alb_dns_name" {
   value       = module.alb.alb_dns_name
 }
 
+output "alb_arn" {
+  description = "ALB ARN"
+  value       = module.alb.alb_arn
+}
+
 output "ecr_repository_url" {
   description = "ECR repository URL"
   value       = module.ecr.repository_url
@@ -20,23 +25,24 @@ output "ecs_cluster_name" {
 
 output "application_url" {
   description = "Application URL"
-  value = var.create_route53_record ? (
-    var.create_certificate ? 
-    "https://${var.subdomain}.${var.domain_name}" : 
-    "http://${var.subdomain}.${var.domain_name}"
-  ) : (
-    var.create_certificate ? 
-    "https://${module.alb.alb_dns_name}" : 
-    "http://${module.alb.alb_dns_name}"
-  )
+  value       = "https://${var.subdomain}.${local.secret_values.domain_name}"
+  sensitive   = true
 }
 
 output "certificate_arn" {
   description = "SSL Certificate ARN"
-  value       = var.create_certificate ? aws_acm_certificate_validation.main[0].certificate_arn : ""
+  value       = local.secret_values.certificate_arn
+  sensitive   = true
 }
 
 output "dns_record" {
   description = "DNS record created"
-  value       = var.create_route53_record ? "${var.subdomain}.${var.domain_name}" : ""
+  value       = "${var.subdomain}.${local.secret_values.domain_name}"
+  sensitive   = true
+}
+
+output "domain_name" {
+  description = "Full domain name"
+  value       = "${var.subdomain}.${local.secret_values.domain_name}"
+  sensitive   = true
 }
