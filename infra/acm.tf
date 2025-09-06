@@ -1,16 +1,8 @@
-# ACM Certificate
-resource "aws_acm_certificate" "main" {
-  count = var.create_certificate ? 1 : 0
-
-  domain_name       = "${var.subdomain}.${var.domain_name}"
-  validation_method = "DNS"
-  
-  lifecycle {
-    ignore_changes = all
-    prevent_destroy = true
-  }
-}
+# ACM Certificate Management
+# We're using a variable to specify an existing certificate ARN instead of creating one
+# This simplifies certificate management and avoids validation issues
 
 locals {
-  certificate_arn = aws_acm_certificate.existing.arn
+  # Use the certificate ARN from variables
+  certificate_arn = var.certificate_arn
 }
