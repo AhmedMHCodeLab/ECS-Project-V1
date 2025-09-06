@@ -1,6 +1,4 @@
-# 🚀 CoderCo Assignment 1: Threat Composer on ECS
-
-![Threat Composer Screenshot](docs/threat-composer-screenshot.png)
+# Threat Composer on ECS
 
 ## 📋 Project Overview
 
@@ -9,10 +7,6 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 ### 🔗 Live Demo
 
 Visit the live application: [https://threatcomposer.ahmedmhcodelab.click/](https://threatcomposer.ahmedmhcodelab.click/)
-
-## 🏗️ Architecture
-
-![Infrastructure Architecture Diagram](docs/architecture-diagram.png)
 
 The infrastructure consists of:
 
@@ -109,7 +103,7 @@ docker run -p 80:80 threat-composer:local
    terraform apply
    ```
 
-4. After deployment (approximately 10-15 minutes), access your application using the URL in the Terraform outputs.
+4. After deployment, access your application using the URL in the Terraform outputs.
 
 ## 📁 Project Structure
 
@@ -135,20 +129,6 @@ docker run -p 80:80 threat-composer:local
 └── docs/                   # Documentation and diagrams
 ```
 
-## 🔄 CI/CD Pipeline
-
-The CI/CD pipeline automates the following:
-
-1. **On code changes to the application**:
-   - Builds the Docker image
-   - Runs security scanning with Trivy
-   - Pushes the image to ECR
-   - Updates the ECS service
-
-2. **On changes to infrastructure code**:
-   - Validates Terraform files
-   - Creates a plan for review
-   - Applies changes after approval
 
 ## 🔒 Security Features
 
@@ -159,27 +139,6 @@ The CI/CD pipeline automates the following:
 - Container scanning in CI/CD
 - Infrastructure security scanning
 
-## 🔄 Maintenance and Operations
-
-### Monitoring
-
-- CloudWatch metrics for ECS service health
-- ALB access logs for traffic analysis
-- Container insights for performance metrics
-
-### Scaling
-
-Adjust the desired_count in `infra/modules/ecs/variables.tf` to scale out:
-
-```hcl
-variable "desired_count" {
-  description = "Number of ECS tasks to run"
-  type        = number
-  default     = 2  # Change as needed
-}
-```
-
-Auto-scaling policies are configured based on CPU and memory utilization.
 
 ## 📊 Project Outcomes
 
