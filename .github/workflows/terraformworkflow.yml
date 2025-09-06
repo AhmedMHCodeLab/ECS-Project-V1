@@ -54,7 +54,12 @@ jobs:
         run: |
           echo "Planning for environment: dev"
           
+          # First refresh state to handle existing resources
+          echo "Refreshing Terraform state..."
+          terraform apply -refresh-only -auto-approve -var="environment=dev" || true
+          
           # Generate plan
+          echo "Generating Terraform plan..."
           terraform plan -no-color -var="environment=dev" -out=tfplan || {
             echo "Plan failed, likely due to existing resources"
             echo "Running with -refresh-only to update state without planning changes"
@@ -62,7 +67,7 @@ jobs:
           }
       
       - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
@@ -73,7 +78,7 @@ jobs:
         run: terraform show -no-color tfplan > plan.txt
       
       - name: Upload Plan Text
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-text
           path: ${{ env.TF_WORKING_DIR }}/plan.txt
