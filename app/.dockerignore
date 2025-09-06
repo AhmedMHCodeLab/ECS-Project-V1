@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Version control
+.git
+.gitignore
+
+# Build outputs
+build
+dist
+
+# Environment and secrets
+.env*
+
+# Test and coverage
+coverage
+
+# IDE files
+.vscode
+.idea
+
+# Docker
+.dockerignore
+
+# README and docs
+*.md

@@ -1,88 +1,52 @@
-# AWS specific
+# AWS
 .aws/
-aws/
-aws-cli/
 *aws-credentials*
 
-# Terraform additional files
-infra/**/.terraform/
-infra/**/*.tfstate
-infra/**/*.tfstate.backup
-infra/**/*.tfplan
-infra/.terraform.tfstate.lock.info
-infra/**/.terraform.lock.hcl
-
-# Crash log files
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
+terraform.tfvars
 crash.log
 
-# SSH Keys
+# Secrets
 *.pem
 *.key
 id_rsa*
 id_dsa*
+.env
+.env.*
+
+# App
+node_modules/
+app/build/
+app/dist/
+build/
+dist/
 
 # Docker
+.docker/data
+.docker/volumes
 docker-compose.override.yml
-Dockerfile
-.dockerignore
 
-# Application specific
-app/.env.*
-app/npm-debug.log*
-app/yarn-debug.log*
-app/yarn-error.log*
-app/coverage/
-app/.next/
-node_modules/
-npm-debug.log
-.env
-
-# Testing and coverage
-.nyc_output/
-coverage/
-.coverage/
-
-# Local development files
-*.local
-.envrc
-.direnv/
-
-# Temporary files
-*.swp
-*.swo
-*~
-.sass-cache/
-.DS_Store
-
-# Version control
-.git/
-.gitignore
-
-# Documentation
-README.md
-
-# Dependencies
-node_modules/
-/.pnp
-.pnp.js
-
-# Testing
-/coverage
-
-# Production
-/build
-
-# Misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# Logs and testing
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+coverage/
 
-# But don't ignore Dockerfile
+# Development
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Exceptions - Do NOT ignore these files
 !Dockerfile
 !*/Dockerfile
+!docker-compose.yml
+!.dockerignore
