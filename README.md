@@ -8,7 +8,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ### 🔗 Live Demo
 
-Visit the live application: [https://tm.ahmedmhcodelab.com](https://tm.ahmedmhcodelab.com)
+Visit the live application: [https://threatcomposer.ahmedmhcodelab.click/](https://threatcomposer.ahmedmhcodelab.click/)
 
 ## 🏗️ Architecture
 
