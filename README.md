@@ -6,7 +6,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ### �️ Architecture Diagram
 
-![AWS ECS Architecture](diagram.png)
+![AWS ECS Architecture](Diagram.png)
 
 ### �🔗 Live Demo
 
