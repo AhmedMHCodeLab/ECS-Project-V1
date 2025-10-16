@@ -118,7 +118,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ### 🔗 Live Demo
 
-Visit the live application: [https://threatcomposer.ahmedmhcodelab.click/](https://threatcomposer.ahmedmhcodelab.click/)
+Visit the live application: [https://tc.ahmedmhcodelab.click/](https://tc.ahmedmhcodelab.click/)
 
 The infrastructure consists of:
 
@@ -137,8 +137,8 @@ The infrastructure consists of:
 - **Security & Access**
   - Application Load Balancer with HTTPS listener
   - ACM certificate for TLS/SSL
-  - Route 53 DNS configuration
-  - AWS Secrets Manager for sensitive configuration
+  - Route 53 DNS configuration and hosted zone management
+  - Security groups with least privilege access
 
 - **CI/CD Pipeline**
   - GitHub Actions workflows for automation
@@ -150,10 +150,10 @@ The infrastructure consists of:
 
 ### Prerequisites
 
-- Node.js and Yarn
+- Node.js 18+ and Yarn
 - Docker
-- AWS CLI
-- Terraform 1.0+
+- AWS CLI v2
+- Terraform 1.9.0+
 
 ### Running Locally
 
@@ -192,8 +192,8 @@ docker run -p 80:80 threat-composer:local
 ### Prerequisites
 
 - AWS account with appropriate permissions
-- Terraform 1.0+
-- A registered domain name (for HTTPS)
+- Terraform 1.9.0+
+- A registered domain name (for HTTPS and DNS delegation)
 
 ### Deployment Steps
 
@@ -204,8 +204,9 @@ docker run -p 80:80 threat-composer:local
 
 2. Update domain settings in `infra/terraform.tfvars`:
    ```hcl
-   domain_name = "your-domain.com"
-   environment = "dev"  # or "prod"
+   domain_name = "tc.your-domain.com"
+   environment = "dev"
+   project_name = "ecs-threat-composer"
    ```
 
 3. Initialize and apply Terraform:
@@ -215,7 +216,8 @@ docker run -p 80:80 threat-composer:local
    terraform apply
    ```
 
-4. After deployment, access your application using the URL in the Terraform outputs.
+4. After deployment, access your application at the URL shown in Terraform outputs.
+5. **Important**: Update your domain's nameservers at your registrar to point to the Route53 hosted zone nameservers for DNS delegation.
 
 ## 📁 Project Structure
 
@@ -267,12 +269,11 @@ docker run -p 80:80 threat-composer:local
 
 ## 🔒 Security Features
 
-- Private subnets for ECS tasks
-- Security groups with least privilege
-- HTTPS with TLS 1.2+
-- Secrets management for sensitive configuration
-- Container scanning in CI/CD
-- Infrastructure security scanning
+- Private subnets for ECS tasks with NAT Gateway egress
+- Security groups with least privilege access
+- HTTPS with TLS 1.2+ and automatic certificate management
+- Route53 hosted zone for DNS security
+- Container image scanning in CI/CD pipeline
 
 
 ## 📊 Project Outcomes
