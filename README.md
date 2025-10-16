@@ -8,7 +8,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ![AWS ECS Architecture](Diagram.png)
 
-### 🖼️ Application Screenshots
+### Application Screenshots
 
 <div align="center">
   <div style="position: relative; width: 80%; max-width: 600px; margin: 20px auto;">
@@ -116,7 +116,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
   </div>
 </div>
 
-### 🔗 Live Demo
+### Live Demo
 
 Visit the live application: [https://tc.ahmedmhcodelab.click/](https://tc.ahmedmhcodelab.click/)
 
@@ -146,7 +146,7 @@ The infrastructure consists of:
   - Terraform validation and deployment
   - Zero-downtime deployment strategy
 
-## 💻 Local Development
+## Local Development
 
 ### Prerequisites
 
@@ -187,7 +187,7 @@ docker build -t threat-composer:local ./app
 docker run -p 80:80 threat-composer:local
 ```
 
-## 🔧 Infrastructure Deployment
+## Infrastructure Deployment
 
 ### Prerequisites
 
@@ -260,8 +260,8 @@ docker run -p 80:80 threat-composer:local
 │   ├── manualterraformapply.yml
 │   ├── TerraformDestroy.yml
 │   └── imagebuildandpush.yml
-├── docs/
-│   └── screenshots/
+├
+│   screenshots
 ├── Diagram.png
 └── README.md
 ```
@@ -276,16 +276,14 @@ docker run -p 80:80 threat-composer:local
 - Container image scanning in CI/CD pipeline
 
 
-## 📊 Project Outcomes
+## Project Outcomes
 
 - Successfully containerized the Threat Composer application
 - Implemented a secure, scalable infrastructure on AWS
 - Created automation for both application and infrastructure deployment
 - Applied best practices for security, networking, and DevOps
 
-## 🔮 Future Improvements
-
-- Implement AWS WAF for additional security
+## Future Improvements
 - Add CloudFront for content caching and better global performance
 - Set up cross-region disaster recovery
 - Implement canary deployments for safer releases
