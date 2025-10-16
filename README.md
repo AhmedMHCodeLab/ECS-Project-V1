@@ -8,7 +8,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ![AWS ECS Architecture](Diagram.png)
 
-### 🖼️ Application Screenshots
+### Application Screenshots
 
 <div align="center">
 
@@ -49,7 +49,7 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 </div>
 
-### 🔗 Live Demo
+### Live Demo
 
 Visit the live application: [https://threatcomposer.ahmedmhcodelab.click/](https://threatcomposer.ahmedmhcodelab.click/)
 
@@ -79,7 +79,7 @@ The infrastructure consists of:
   - Terraform validation and deployment
   - Zero-downtime deployment strategy
 
-## 💻 Local Development
+## Local Development
 
 ### Prerequisites
 
@@ -120,7 +120,7 @@ docker build -t threat-composer:local ./app
 docker run -p 80:80 threat-composer:local
 ```
 
-## 🔧 Infrastructure Deployment
+## Infrastructure Deployment
 
 ### Prerequisites
 
@@ -208,16 +208,14 @@ docker run -p 80:80 threat-composer:local
 - Infrastructure security scanning
 
 
-## 📊 Project Outcomes
+## Project Outcomes
 
 - Successfully containerized the Threat Composer application
 - Implemented a secure, scalable infrastructure on AWS
 - Created automation for both application and infrastructure deployment
 - Applied best practices for security, networking, and DevOps
 
-## 🔮 Future Improvements
-
-- Implement AWS WAF for additional security
+## Future Improvements
 - Add CloudFront for content caching and better global performance
 - Set up cross-region disaster recovery
 - Implement canary deployments for safer releases
