@@ -191,8 +191,8 @@ docker run -p 80:80 threat-composer:local
 │   ├── manualterraformapply.yml
 │   ├── TerraformDestroy.yml
 │   └── imagebuildandpush.yml
-├── docs/
-│   └── screenshots/
+├
+│   screenshots
 ├── Diagram.png
 └── README.md
 ```
