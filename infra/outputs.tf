@@ -25,24 +25,25 @@ output "ecs_cluster_name" {
 
 output "application_url" {
   description = "Application URL"
-  value       = "https://${var.subdomain}.${local.secret_values.domain_name}"
-  sensitive   = true
+  value       = "https://${var.domain_name}"
 }
 
 output "certificate_arn" {
   description = "SSL Certificate ARN"
-  value       = local.secret_values.certificate_arn
-  sensitive   = true
-}
-
-output "dns_record" {
-  description = "DNS record created"
-  value       = "${var.subdomain}.${local.secret_values.domain_name}"
-  sensitive   = true
+  value       = module.acm.certificate_arn
 }
 
 output "domain_name" {
-  description = "Full domain name"
-  value       = "${var.subdomain}.${local.secret_values.domain_name}"
-  sensitive   = true
+  description = "Domain name"
+  value       = var.domain_name
+}
+
+output "hosted_zone_id" {
+  description = "Route53 Hosted Zone ID"
+  value       = aws_route53_zone.main.zone_id
+}
+
+output "hosted_zone_name_servers" {
+  description = "Name servers for the hosted zone"
+  value       = aws_route53_zone.main.name_servers
 }

@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "main" {
     {
       name  = "${var.project_name}-container"
       image = var.container_image
-      
+
       portMappings = [
         {
           containerPort = 80
