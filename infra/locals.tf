@@ -4,6 +4,4 @@ locals {
     Environment = var.environment
     ManagedBy   = "Terraform"
   }
-
-  secret_values = module.secrets.secret_values
 }

@@ -1,62 +1,30 @@
-name: Build and Push Docker Image
+name: Build and Push Image
 
 on:
-  workflow_dispatch:  # Allow manual triggers but with no inputs required
+  workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - 'app/**'
-
-env:
-  AWS_REGION: us-east-1
-  ECR_REPOSITORY: ecs-threat-composer
-  ECS_SERVICE: ecs-threat-composer-dev-service
-  ECS_CLUSTER: ecs-threat-composer-dev-cluster
-  ENVIRONMENT: dev  # Hardcoded to dev environment for full automation
+    paths: ['app/**']
 
 jobs:
-  build-and-push:
-    name: Build and Push Docker Image
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-east-1
       
-      - name: Login to ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
           context: ./app
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+            ${{ steps.ecr.outputs.registry }}/ecs-threat-composer-dev:${{ github.sha }}
+            ${{ steps.ecr.outputs.registry }}/ecs-threat-composer-dev:latest

@@ -7,7 +7,7 @@ resource "aws_secretsmanager_secret" "app_config" {
 
 resource "aws_secretsmanager_secret_version" "app_config" {
   secret_id = aws_secretsmanager_secret.app_config.id
-  
+
   secret_string = jsonencode({
     certificate_arn = var.certificate_arn
     container_image = var.container_image

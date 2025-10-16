@@ -1,98 +1,29 @@
-name: Manual Terraform Apply
+name: Terraform Apply
 
 on:
-  workflow_dispatch:  # Manual trigger with no inputs required
-
-env:
-  AWS_REGION: us-east-1
-  TF_WORKING_DIR: ./infra
-  ENVIRONMENT: dev  # Hardcoded to dev environment for full automation
+  workflow_dispatch:
 
 jobs:
-  terraform-apply:
-    name: Apply Terraform Changes
+  apply:
     runs-on: ubuntu-latest
-    
+    concurrency:
+      group: terraform-apply-${{ github.ref }}
+      cancel-in-progress: true
+    defaults:
+      run:
+        working-directory: ./infra
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-east-1
       
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.0.0
-      
-      - name: Terraform Init
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform init
-      
-      - name: Terraform Plan
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        id: plan
-        run: |
-          terraform plan -no-color -out=tfplan || {
-            echo "Plan failed, likely due to existing resources"
-            echo "Running with -refresh-only to update state without planning changes"
-            terraform plan -refresh-only -no-color
-          }
-      
-      - name: Terraform Apply
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: |
-          echo "Applying for environment: dev"
-          
-          # Step 1: Check if resources exist and need to be imported
-          echo "Checking for existing resources..."
-          
-          # Try to discover existing VPC resources
-          VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=ecs-threat-composer-dev-vpc" --query 'Vpcs[0].VpcId' --output text)
-          if [ "$VPC_ID" != "None" ] && [ "$VPC_ID" != "null" ]; then
-            echo "Found existing VPC: $VPC_ID"
-            echo "Importing VPC into Terraform state..."
-            terraform import -var="environment=dev" module.vpc.aws_vpc.main $VPC_ID || true
-          fi
-          
-          # Try to discover existing ECR repository
-          ECR_EXISTS=$(aws ecr describe-repositories --repository-names ecs-threat-composer-dev --query 'repositories[0].repositoryName' --output text 2>/dev/null || echo "not-found")
-          if [ "$ECR_EXISTS" != "not-found" ]; then
-            echo "Found existing ECR repository: $ECR_EXISTS"
-            echo "Importing ECR repository into Terraform state..."
-            terraform import -var="environment=dev" module.ecr.aws_ecr_repository.main $ECR_EXISTS || true
-          fi
-          
-          # Try to discover existing ECS cluster
-          ECS_CLUSTER=$(aws ecs describe-clusters --clusters ecs-threat-composer-dev-cluster --query 'clusters[0].clusterName' --output text 2>/dev/null || echo "not-found")
-          if [ "$ECS_CLUSTER" != "not-found" ] && [ "$ECS_CLUSTER" != "MISSING" ]; then
-            echo "Found existing ECS cluster: $ECS_CLUSTER"
-            echo "Importing ECS cluster into Terraform state..."
-            terraform import -var="environment=dev" module.ecs.aws_ecs_cluster.main ecs-threat-composer-dev-cluster || true
-          fi
-          
-          # Try to discover ALB
-          ALB_ARN=$(aws elbv2 describe-load-balancers --names ecs-threat-composer-dev-alb --query 'LoadBalancers[0].LoadBalancerArn' --output text 2>/dev/null || echo "not-found")
-          if [ "$ALB_ARN" != "not-found" ]; then
-            echo "Found existing ALB: $ALB_ARN"
-            echo "Importing ALB into Terraform state..."
-            terraform import -var="environment=dev" module.alb.aws_lb.main $ALB_ARN || true
-          fi
-          
-          # Step 2: Run apply with refresh-only first to sync state
-          echo "Refreshing Terraform state..."
-          terraform apply -refresh-only -auto-approve -var="environment=dev" || true
-          
-          # Step 3: Try regular apply 
-          echo "Attempting to apply changes..."
-          terraform apply -auto-approve -var="environment=dev" || {
-            echo "Apply encountered errors. This is often normal with partial imports."
-            echo "Some resources might already exist and need manual importing."
-            echo "You may need to run individual terraform import commands for specific resources."
-            echo "Continuing with deployment process..."
-            exit 0
-          }
+          terraform_version: 1.9.0
+
+      - run: terraform init -input=false
+      - run: terraform apply -input=false -auto-approve
