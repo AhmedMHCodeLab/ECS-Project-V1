@@ -8,7 +8,109 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ![AWS ECS Architecture](Diagram.png)
 
-### �🔗 Live Demo
+### 🖼️ Application Screenshots
+
+<div align="center">
+  <div style="position: relative; width: 90%; max-width: 800px; margin: 20px auto; overflow: hidden; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+    <div id="carousel" style="display: flex; transition: transform 0.5s ease-in-out; width: 400%;">
+      <div style="min-width: 25%; position: relative;">
+        <img src="threat-composer.png" alt="Threat Composer Dashboard" style="width: 100%; height: 400px; object-fit: cover;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 20px; text-align: center;">
+          <h3 style="margin: 0; font-size: 1.2em;">Insights Dashboard</h3>
+          <p style="margin: 5px 0 0; opacity: 0.9;">Threat prioritization and category distribution</p>
+        </div>
+      </div>
+      <div style="min-width: 25%; position: relative;">
+        <img src="threat-composer1.png" alt="Threat Composer Interface" style="width: 100%; height: 400px; object-fit: cover;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 20px; text-align: center;">
+          <h3 style="margin: 0; font-size: 1.2em;">Threat Modeling Interface</h3>
+          <p style="margin: 5px 0 0; opacity: 0.9;">Interactive threat modeling workspace</p>
+        </div>
+      </div>
+      <div style="min-width: 25%; position: relative;">
+        <img src="threat-composer 2.png" alt="Data Flow Diagram" style="width: 100%; height: 400px; object-fit: cover;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 20px; text-align: center;">
+          <h3 style="margin: 0; font-size: 1.2em;">Data Flow Diagram</h3>
+          <p style="margin: 5px 0 0; opacity: 0.9;">Visual threat modeling with diagram editor</p>
+        </div>
+      </div>
+      <div style="min-width: 25%; position: relative;">
+        <img src="threat-composer 3.png" alt="Application Features" style="width: 100%; height: 400px; object-fit: cover;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 20px; text-align: center;">
+          <h3 style="margin: 0; font-size: 1.2em;">Application Features</h3>
+          <p style="margin: 5px 0 0; opacity: 0.9;">Comprehensive threat analysis tools</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation dots -->
+    <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px;">
+      <button onclick="currentSlide = 0; updateCarousel()" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background: rgba(255,255,255,0.8); cursor: pointer;"></button>
+      <button onclick="currentSlide = 1; updateCarousel()" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background: rgba(255,255,255,0.3); cursor: pointer;"></button>
+      <button onclick="currentSlide = 2; updateCarousel()" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background: rgba(255,255,255,0.3); cursor: pointer;"></button>
+      <button onclick="currentSlide = 3; updateCarousel()" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background: rgba(255,255,255,0.3); cursor: pointer;"></button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const totalSlides = 4;
+    
+    function updateCarousel() {
+      const carousel = document.getElementById('carousel');
+      const dots = document.querySelectorAll('button');
+      
+      carousel.style.transform = `translateX(-${currentSlide * 25}%)`;
+      
+      dots.forEach((dot, index) => {
+        dot.style.background = index === currentSlide ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.3)';
+      });
+    }
+    
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+    
+    // Auto-advance every 5 seconds
+    setInterval(nextSlide, 5000);
+    
+    // Touch/swipe support
+    let startX = 0;
+    let isDragging = false;
+    
+    document.getElementById('carousel').addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+    });
+    
+    document.getElementById('carousel').addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0 && currentSlide < totalSlides - 1) {
+          currentSlide++;
+        } else if (diffX < 0 && currentSlide > 0) {
+          currentSlide--;
+        }
+        updateCarousel();
+      }
+      
+      isDragging = false;
+    });
+  </script>
+  
+  <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+    <span style="display: inline-block; margin-right: 15px;">🖱️ Click dots to navigate</span>
+    <span style="display: inline-block; margin-right: 15px;">📱 Swipe on mobile</span>
+    <span style="display: inline-block;">⏰ Auto-advances every 5s</span>
+  </p>
+</div>
+
+### 🔗 Live Demo
 
 Visit the live application: [https://threatcomposer.ahmedmhcodelab.click/](https://threatcomposer.ahmedmhcodelab.click/)
 
@@ -113,24 +215,47 @@ docker run -p 80:80 threat-composer:local
 
 ```
 .
-├── app/                    # Threat Composer application
-│   ├── Dockerfile          # Multi-stage build for production
-│   ├── nginx.conf          # Web server configuration
-│   └── src/                # Application source code
-├── infra/                  # Terraform infrastructure code
-│   ├── modules/            # Reusable Terraform modules
-│   │   ├── alb/            # Load balancer configuration
-│   │   ├── ecr/            # Container registry
-│   │   ├── ecs/            # ECS service and tasks
-│   │   ├── secrets/        # Secrets management
-│   │   ├── security-groups/ # Network security
-│   │   └── vpc/            # Network foundation
-│   ├── main.tf             # Main configuration
-│   └── variables.tf        # Input variables
-├── .github/workflows/      # CI/CD pipeline configurations
-│   ├── ci-cd.yml           # Application deployment
-│   └── terraform.yml       # Infrastructure deployment
-└── docs/                   # Documentation and diagrams
+├── app/
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── package.json
+│   ├── babel.config.json
+│   ├── tsconfig.json
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── manifest.json
+│   │   └── robots.txt
+│   └── src/
+│       ├── index.tsx
+│       ├── components/
+│       ├── containers/
+│       ├── contexts/
+│       ├── hooks/
+│       ├── configs/
+│       └── utils/
+├── infra/
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   ├── locals.tf
+│   ├── route53.tf
+│   ├── terraform.tfvars
+│   └── modules/
+│       ├── vpc/
+│       ├── sg/
+│       ├── ecr/
+│       ├── acm/
+│       ├── alb/
+│       └── ecs/
+├── .github/workflows/
+│   ├── terraformworkflow.yml
+│   ├── manualterraformapply.yml
+│   ├── TerraformDestroy.yml
+│   └── imagebuildandpush.yml
+├── docs/
+│   └── screenshots/
+├── Diagram.png
+└── README.md
 ```
 
 
