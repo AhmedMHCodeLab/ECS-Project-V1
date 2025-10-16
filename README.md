@@ -10,19 +10,21 @@ This repository contains my implementation of Amazon's Threat Composer Tool host
 
 ### 🖼️ Application Screenshots
 
-<div align="center">
+**Insights Dashboard**
+![Dashboard](threat-composer.png)
+*Threat prioritization and category distribution*
 
-| Insights Dashboard | Threat Modeling Interface |
-|:------------------:|:-------------------------:|
-| ![Dashboard](threat-composer.png) | ![Interface](threat-composer1.png) |
-| *Threat prioritization and category distribution* | *Interactive threat modeling workspace* |
+**Threat Modeling Interface**
+![Interface](threat-composer1.png)
+*Interactive threat modeling workspace*
 
-| Data Flow Diagram | Application Features |
-|:-----------------:|:-------------------:|
-| ![Diagram](threat-composer%202.png) | ![Features](threat-composer%203.png) |
-| *Visual threat modeling with diagram editor* | *Comprehensive threat analysis tools* |
+**Data Flow Diagram**
+![Diagram](threat-composer%202.png)
+*Visual threat modeling with diagram editor*
 
-</div>
+**Application Features**
+![Features](threat-composer%203.png)
+*Comprehensive threat analysis tools*
 
 ### Live Demo
 
