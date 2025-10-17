@@ -1,6 +1,35 @@
-# Create hosted zone for subdomain
+# Create hosted zone for parent domain
+resource "aws_route53_zone" "parent" {
+  name = var.parent_domain_name
+
+  tags = {
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+    Type        = "Parent"
+  }
+}
+
+# Automatically update nameservers for the registered domain
+# This updates the Route53 Domains registration to use the new parent hosted zone nameservers
+resource "aws_route53domains_registered_domain" "main" {
+  domain_name = var.parent_domain_name
+
+  dynamic "name_server" {
+    for_each = aws_route53_zone.parent.name_servers
+    content {
+      name = name_server.value
+    }
+  }
+
+  depends_on = [aws_route53_zone.parent]
+}
+
+# Create hosted zone for subdomain (depends on parent zone to ensure correct order)
 resource "aws_route53_zone" "main" {
   name = var.domain_name
+
+  depends_on = [aws_route53domains_registered_domain.main]
 
   tags = {
     Project     = var.project_name
@@ -9,14 +38,15 @@ resource "aws_route53_zone" "main" {
   }
 }
 
-# Delegate subdomain to the new hosted zone (NS record in parent zone), optional
+# Delegate subdomain to the new hosted zone (NS record in parent zone)
 resource "aws_route53_record" "subdomain_ns" {
-  count   = var.parent_hosted_zone_id != "" ? 1 : 0
-  zone_id = var.parent_hosted_zone_id
+  zone_id = aws_route53_zone.parent.zone_id
   name    = var.domain_name
   type    = "NS"
   ttl     = 300
   records = aws_route53_zone.main.name_servers
+
+  depends_on = [aws_route53_zone.main]
 }
 
 # A record pointing to the ALB

@@ -28,8 +28,8 @@ variable "container_image" {
   default     = "590183934190.dkr.ecr.us-east-1.amazonaws.com/ecs-threat-composer:latest"
 }
 
-variable "parent_hosted_zone_id" {
-  description = "Optional: Parent Route53 hosted zone ID for NS delegation of var.domain_name. If empty, delegation is skipped."
+variable "parent_domain_name" {
+  description = "Parent domain name registered with Route53 Domains (e.g., ahmedmhcodelab.click). Used for nameserver and NS delegation automation."
   type        = string
-  default     = ""
+  default     = "ahmedmhcodelab.click"
 }
