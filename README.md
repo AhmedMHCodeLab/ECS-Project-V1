@@ -4,6 +4,8 @@
 
 This repository contains my implementation of Amazon's Threat Composer Tool hosted on AWS ECS using Terraform infrastructure as code. The project demonstrates a complete DevOps workflow with containerization, infrastructure provisioning, CI/CD, and security best practices.
 
+### �️ Architecture Diagram
+![AWS ECS Architecture](ECS(1).png)
 
 ### 🖼️ Application Screenshots
 
