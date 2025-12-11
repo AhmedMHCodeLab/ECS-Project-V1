@@ -1,210 +1,146 @@
 # Threat Composer on ECS
 
-## 📋 Project Overview
+Production deployment of AWS's Threat Composer using ECS Fargate, fully automated with Terraform and GitHub Actions.
 
-This repository contains my implementation of Amazon's Threat Composer Tool hosted on AWS ECS using Terraform infrastructure as code. The project demonstrates a complete DevOps workflow with containerization, infrastructure provisioning, CI/CD, and security best practices.
+**Live instance:** [tc.ahmedmhcodelab.click](https://tc.ahmedmhcodelab.click/)
 
-### �️ Architecture Diagram
-![AWS ECS Architecture](ECS(1).png)
+![Architecture](ECS(1).png)
 
-### 🖼️ Application Screenshots
+## What This Is
 
-**Insights Dashboard**
-![Dashboard](threat-composer.png)
-*Threat prioritization and category distribution*
+Threat Composer is AWS's open-source threat modeling tool. This repo contains the infrastructure and deployment automation to run it on ECS Fargate with proper networking, HTTPS termination, and CI/CD.
 
-**Threat Modeling Interface**
-![Interface](threat-composer1.png)
-*Interactive threat modeling workspace*
+The setup uses:
+- Multi-AZ VPC with public/private subnet isolation
+- ECS Fargate for container orchestration
+- ALB with ACM-managed certificates
+- Route53 for DNS management
+- GitHub Actions for build and deployment automation
 
-**Data Flow Diagram**
-![Diagram](threat-composer%202.png)
-*Visual threat modeling with diagram editor*
+![Application Interface](threat-composer.png)
 
-**Application Features**
-![Features](threat-composer%203.png)
-*Comprehensive threat analysis tools*
+## Infrastructure
 
-### Live Demo
+The Terraform configuration provisions:
 
-Visit the live application: [https://tc.ahmedmhcodelab.click/](https://tc.ahmedmhcodelab.click/)
+**Networking**
+- VPC spanning 2 availability zones
+- Public subnets for load balancers
+- Private subnets for ECS tasks
+- NAT gateways for private subnet internet access
 
-The infrastructure consists of:
+**Compute**
+- ECS Fargate cluster running the containerized React app
+- Auto-scaling based on CPU and memory utilization
+- Task definitions with configurable resource limits
 
-- **Network Layer**
-  - VPC with public and private subnets across 2 availability zones
-  - Internet Gateway for public access
-  - NAT Gateways for private subnet egress
-  - Security groups with restricted access
+**Load Balancing & DNS**
+- Application Load Balancer with HTTPS listener (TLS 1.2+)
+- ACM certificate for SSL/TLS
+- Route53 hosted zone and DNS records
 
-- **Container Orchestration**
-  - ECS Fargate cluster (serverless container management)
-  - Task definitions with proper resource allocation
-  - Auto-scaling based on CPU/memory metrics
-  - ECR repository for container images
+**Container Registry**
+- ECR repository for storing built images
+- Image scanning enabled
 
-- **Security & Access**
-  - Application Load Balancer with HTTPS listener
-  - ACM certificate for TLS/SSL
-  - Route 53 DNS configuration and hosted zone management
-  - Security groups with least privilege access
+## Screenshots
 
-- **CI/CD Pipeline**
-  - GitHub Actions workflows for automation
-  - Container building and security scanning
-  - Terraform validation and deployment
-  - Zero-downtime deployment strategy
+![Threat Modeling](threat-composer1.png)
+![Data Flow](threat-composer%202.png)
+![Analysis Tools](threat-composer%203.png)
 
-## Local Development
+## Running Locally
 
-### Prerequisites
+Clone and install dependencies:
 
-- Node.js 18+ and Yarn
-- Docker
-- AWS CLI v2
-- Terraform 1.9.0+
+```bash
+git clone https://github.com/AhmedMHCodeLab/ECS-Project-V1.git
+cd ECS-Project-V1/app
+yarn install
+yarn build
+```
 
-### Running Locally
+Serve the build:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/AhmedMHCodeLab/ECS-Project-V1.git
-   cd ECS-Project-V1/app
-   ```
+```bash
+yarn global add serve
+serve -s build
+```
 
-2. Install dependencies and build:
-   ```bash
-   yarn install
-   yarn build
-   ```
+Access at `http://localhost:3000/workspaces/default/dashboard`
 
-3. Run the application:
-   ```bash
-   yarn global add serve
-   serve -s build
-   ```
-
-4. Access the application at:
-   ```
-   http://localhost:3000/workspaces/default/dashboard
-   ```
-
-### Building & Testing the Container
+Or run the containerized version:
 
 ```bash
 docker build -t threat-composer:local ./app
 docker run -p 80:80 threat-composer:local
 ```
 
-## Infrastructure Deployment
+## Deploying to AWS
 
-### Prerequisites
-
-- AWS account with appropriate permissions
+Requirements:
+- AWS account with appropriate IAM permissions
 - Terraform 1.9.0+
-- A registered domain name (for HTTPS and DNS delegation)
+- Registered domain name
 
-### Deployment Steps
+Configure AWS credentials:
 
-1. Configure your AWS credentials:
-   ```bash
-   aws configure
-   ```
-
-2. Update domain settings in `infra/terraform.tfvars`:
-   ```hcl
-   domain_name = "tc.your-domain.com"
-   environment = "dev"
-   project_name = "ecs-threat-composer"
-   ```
-
-3. Initialize and apply Terraform:
-   ```bash
-   cd infra
-   terraform init
-   terraform apply
-   ```
-
-4. After deployment, access your application at the URL shown in Terraform outputs.
-5. **Important**: Update your domain's nameservers at your registrar to point to the Route53 hosted zone nameservers for DNS delegation.
-
-## 📁 Project Structure
-
-```
-.
-├── app/
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   ├── package.json
-│   ├── babel.config.json
-│   ├── tsconfig.json
-│   ├── public/
-│   │   ├── index.html
-│   │   ├── manifest.json
-│   │   └── robots.txt
-│   └── src/
-│       ├── index.tsx
-│       ├── components/
-│       ├── containers/
-│       ├── contexts/
-│       ├── hooks/
-│       ├── configs/
-│       └── utils/
-├── infra/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── locals.tf
-│   ├── route53.tf
-│   ├── terraform.tfvars
-│   └── modules/
-│       ├── vpc/
-│       ├── sg/
-│       ├── ecr/
-│       ├── acm/
-│       ├── alb/
-│       └── ecs/
-├── .github/workflows/
-│   ├── terraformworkflow.yml
-│   ├── manualterraformapply.yml
-│   ├── TerraformDestroy.yml
-│   └── imagebuildandpush.yml
-├
-│   screenshots
-├── Diagram.png
-└── README.md
+```bash
+aws configure
 ```
 
+Update `infra/terraform.tfvars`:
 
-## 🔒 Security Features
+```hcl
+domain_name = "tc.your-domain.com"
+environment = "dev"
+project_name = "ecs-threat-composer"
+```
 
-- Private subnets for ECS tasks with NAT Gateway egress
-- Security groups with least privilege access
-- HTTPS with TLS 1.2+ and automatic certificate management
-- Route53 hosted zone for DNS security
-- Container image scanning in CI/CD pipeline
+Deploy:
 
+```bash
+cd infra
+terraform init
+terraform apply
+```
 
-## Project Outcomes
+After Terraform completes, update your domain registrar's nameservers to point to the Route53 hosted zone nameservers shown in the output.
 
-- Successfully containerized the Threat Composer application
-- Implemented a secure, scalable infrastructure on AWS
-- Created automation for both application and infrastructure deployment
-- Applied best practices for security, networking, and DevOps
+## CI/CD Pipeline
 
-## Future Improvements
-- Add CloudFront for content caching and better global performance
-- Set up cross-region disaster recovery
-- Implement canary deployments for safer releases
+The GitHub Actions workflow handles:
+- Docker image builds
+- Container vulnerability scanning
+- Terraform validation and planning
+- Automated deployment to ECS
+- Rolling updates with zero downtime
 
-## 📚 Resources Used
+Deployments trigger on pushes to main after all checks pass.
 
-- [Terraform AWS Registry](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [Terraform AWS ECS](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_service)
-- [Terraform Documentation](https://www.terraform.io/docs/index.html)
-- [ECS Documentation](https://docs.aws.amazon.com/ecs/index.html)
-- [Threat Composer Documentation](https://github.com/awslabs/threat-composer)
+## Security Considerations
+
+- ECS tasks run in private subnets with no direct internet access
+- Outbound traffic routes through NAT gateways
+- Security groups enforce least-privilege network access
+- ALB terminates TLS, tasks communicate over HTTP internally
+- Container images scanned for vulnerabilities in CI
+- ACM handles certificate lifecycle automatically
+
+## Next Steps
+
+Things I'm considering:
+- CloudFront distribution for edge caching and global performance
+- Cross-region failover with Route53 health checks
+- Blue/green deployments for safer release strategy
+- CloudWatch dashboards for observability
+
+## References
+
+- [Threat Composer source](https://github.com/awslabs/threat-composer)
+- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [ECS Best Practices](https://docs.aws.amazon.com/AmazonECS/latest/bestpracticesguide/intro.html)
 
 ---
 
-Developed by [AhmedMHCodeLab](https://github.com/AhmedMHCodeLab) 
+Built by [AhmedMHCodeLab](https://github.com/AhmedMHCodeLab)
