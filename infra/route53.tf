@@ -1,4 +1,3 @@
-# Create hosted zone for parent domain
 resource "aws_route53_zone" "parent" {
   name = var.parent_domain_name
 
@@ -10,8 +9,6 @@ resource "aws_route53_zone" "parent" {
   }
 }
 
-# Automatically update nameservers for the registered domain
-# This updates the Route53 Domains registration to use the new parent hosted zone nameservers
 resource "aws_route53domains_registered_domain" "main" {
   domain_name = var.parent_domain_name
 
@@ -25,7 +22,6 @@ resource "aws_route53domains_registered_domain" "main" {
   depends_on = [aws_route53_zone.parent]
 }
 
-# Create hosted zone for subdomain (depends on parent zone to ensure correct order)
 resource "aws_route53_zone" "main" {
   name = var.domain_name
 
@@ -38,7 +34,6 @@ resource "aws_route53_zone" "main" {
   }
 }
 
-# Delegate subdomain to the new hosted zone (NS record in parent zone)
 resource "aws_route53_record" "subdomain_ns" {
   zone_id = aws_route53_zone.parent.zone_id
   name    = var.domain_name
@@ -49,7 +44,6 @@ resource "aws_route53_record" "subdomain_ns" {
   depends_on = [aws_route53_zone.main]
 }
 
-# A record pointing to the ALB
 resource "aws_route53_record" "app" {
   zone_id = aws_route53_zone.main.zone_id
   name    = var.domain_name
@@ -62,7 +56,6 @@ resource "aws_route53_record" "app" {
   }
 }
 
-# ACM validation records (automated)
 resource "aws_route53_record" "acm_validation" {
   for_each = {
     for dvo in module.acm.certificate_domain_validation_options : dvo.domain_name => {

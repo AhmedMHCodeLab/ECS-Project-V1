@@ -14,12 +14,6 @@ resource "aws_acm_certificate" "this" {
   )
 }
 
-# Wait for certificate validation to complete
-# Note: DNS validation records are created in the root route53.tf file
 resource "aws_acm_certificate_validation" "this" {
   certificate_arn = aws_acm_certificate.this.arn
-  
-  # We don't specify validation_record_fqdns here because the records
-  # are created outside this module (in route53.tf)
-  # ACM will automatically detect the validation records in Route53
 }
