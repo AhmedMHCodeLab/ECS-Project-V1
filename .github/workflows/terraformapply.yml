@@ -1,19 +1,14 @@
-name: Terraform Plan
+name: Terraform Apply
 
 on:
-  push:
-    branches: [main]
-    paths: ['infra/**']
-  pull_request:
-    paths: ['infra/**']
   workflow_dispatch:
 
 jobs:
-  plan:
+  apply:
     runs-on: ubuntu-latest
     concurrency:
-      group: terraform-plan-${{ github.ref }}
-      cancel-in-progress: true
+      group: terraform-apply-dev
+      cancel-in-progress: false  # Critical: Don't cancel applies
     defaults:
       run:
         working-directory: ./infra/environments/dev
@@ -33,14 +28,11 @@ jobs:
         with:
           terraform_version: 1.9.0
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
       - name: Terraform Init
         run: terraform init -input=false
       
-      - name: Terraform Validate
-        run: terraform validate
+      - name: Terraform Apply
+        run: terraform apply -input=false -auto-approve
       
-      - name: Terraform Plan
-        run: terraform plan -input=false
+      - name: Show Outputs
+        run: terraform output
