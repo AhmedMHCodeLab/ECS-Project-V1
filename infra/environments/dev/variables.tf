@@ -22,11 +22,6 @@ variable "domain_name" {
   default     = "tc.ahmedmhcodelab.click"
 }
 
-variable "container_image" {
-  description = "Container image URI"
-  type        = string
-  default     = "590183934190.dkr.ecr.us-east-1.amazonaws.com/ecs-threat-composer:latest"
-}
 
 variable "parent_domain_name" {
   description = "Parent domain name registered with Route53 Domains (e.g., ahmedmhcodelab.click). Used for nameserver and NS delegation automation."

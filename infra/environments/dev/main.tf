@@ -1,12 +1,12 @@
 module "vpc" {
-  source       = "./modules/vpc"
+  source       = "../../modules/vpc"
   project_name = var.project_name
   environment  = var.environment
   tags         = local.common_tags
 }
 
 module "security_groups" {
-  source       = "./modules/sg"
+  source       = "../../modules/sg"
   project_name = var.project_name
   environment  = var.environment
   vpc_id       = module.vpc.vpc_id
@@ -15,14 +15,14 @@ module "security_groups" {
 }
 
 module "ecr" {
-  source       = "./modules/ecr"
+  source       = "../../modules/ecr"
   project_name = var.project_name
   environment  = var.environment
   tags         = local.common_tags
 }
 
 module "acm" {
-  source         = "./modules/acm"
+  source         = "../../modules/acm"
   domain_name    = var.domain_name
   hosted_zone_id = aws_route53_zone.main.zone_id
   project_name   = var.project_name
@@ -31,7 +31,7 @@ module "acm" {
 }
 
 module "alb" {
-  source                = "./modules/alb"
+  source                = "../../modules/alb"
   project_name          = var.project_name
   environment           = var.environment
   vpc_id                = module.vpc.vpc_id
@@ -44,13 +44,13 @@ module "alb" {
 }
 
 module "ecs" {
-  source                = "./modules/ecs"
+  source                = "../../modules/ecs"
   project_name          = var.project_name
   environment           = var.environment
   vpc_id                = module.vpc.vpc_id
   private_subnet_ids    = module.vpc.private_subnet_ids
   ecs_security_group_id = module.security_groups.ecs_security_group_id
   target_group_arn      = module.alb.target_group_arn
-  container_image       = var.container_image
+  container_image       = module.ecr.repository_url
   tags                  = local.common_tags
 }
