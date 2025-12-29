@@ -4,7 +4,7 @@ Production deployment of AWS's Threat Composer using ECS Fargate, fully automate
 
 **Live instance:** [tc.ahmedmhcodelab.click](https://tc.ahmedmhcodelab.click/)
 
-![Architecture](ECS(1).png)
+![Architecture](images/ECS(1).png)
 
 ## What This Is
 
@@ -17,7 +17,7 @@ The setup uses:
 - Route53 for DNS management
 - GitHub Actions for build and deployment automation
 
-![Application Interface](threat-composer.png)
+![Application Interface](images/threat-composer.png)
 
 ## Infrastructure
 
@@ -45,9 +45,9 @@ The Terraform configuration provisions:
 
 ## Screenshots
 
-![Threat Modeling](threat-composer1.png)
-![Data Flow](threat-composer%202.png)
-![Analysis Tools](threat-composer%203.png)
+![Threat Modeling](images/threat-composer1.png)
+![Data Flow](images/threat-composer%202.png)
+![Analysis Tools](images/threat-composer%203.png)
 
 ## Running Locally
 
@@ -89,7 +89,7 @@ Configure AWS credentials:
 aws configure
 ```
 
-Update `infra/terraform.tfvars`:
+Update `infra/environments/dev/terraform.tfvars`:
 
 ```hcl
 domain_name = "tc.your-domain.com"
@@ -97,11 +97,21 @@ environment = "dev"
 project_name = "ecs-threat-composer"
 ```
 
-Deploy:
+Bootstrap the remote state backend:
 
 ```bash
-cd infra
+cd infra/bootstrap
 terraform init
+terraform apply
+```
+
+Copy the S3 bucket name from the output and update `infra/environments/dev/backend.tf` with the bucket name.
+
+Deploy the infrastructure:
+
+```bash
+cd infra/environments/dev
+terraform init -migrate-state
 terraform apply
 ```
 
