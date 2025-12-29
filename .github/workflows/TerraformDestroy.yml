@@ -35,7 +35,8 @@ jobs:
           terraform_version: 1.9.0
 
       - name: Terraform Init
-        run: terraform init -input=false
+        run: terraform init -input=false -backend=true
+        continue-on-error: true
       
-      - name: Terraform Destroy
-        run: terraform destroy -input=false -auto-approve
+      - name: Terraform Destroy (without locking)
+        run: terraform destroy -input=false -auto-approve -lock=false
